@@ -4,12 +4,16 @@ SimpleCov.start { add_filter '/spec' }
 require 'bundler/setup'
 Bundler.require
 
+require 'lotc_helper'
+
 is_debugging_enabled = ENV['LOTC_DEBUG']
 RSpec.configure do |config|
   config.profile_examples = 2
   config.order = :random
   config.tty = true
   Kernel.srand config.seed
+
+  include LotcHelper
 
   config.before do
     @stdout, $stdout = $stdout, StringIO.new unless is_debugging_enabled
