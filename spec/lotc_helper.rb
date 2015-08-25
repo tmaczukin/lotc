@@ -17,4 +17,8 @@ module LotcHelper
       define_container :test_container_2_dev, :test_container_2
     END
   end
+
+  def full_example_manifest
+    File.read(File.dirname(__FILE__) + '/lotcfile.example')
+  end
 end
