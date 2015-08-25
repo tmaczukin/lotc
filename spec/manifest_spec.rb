@@ -20,6 +20,7 @@ module LOTC
     end
 
     it 'should return list of added images' do
+      expect(@manifest.images[:test_image_1]).to be_a Image
       expect(@manifest.images).to have_key(:test_image_1)
       expect(@manifest.images).to have_key(:test_image_2)
     end

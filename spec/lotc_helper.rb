@@ -13,6 +13,8 @@ module LotcHelper
       define_container :test_container_2 do
         image :test_image_2
       end
+
+      define_container :test_container_2_dev, :test_container_2
     END
   end
 end
