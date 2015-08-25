@@ -38,8 +38,8 @@ module LOTC
       container_builder
     end
 
-    def add_volume(host_path, container_path)
-      @volumes[host_path] = container_path
+    def add_volume(container_path, host_path)
+      @volumes[container_path] = host_path
     end
 
     def add_link(link_id, container_link)

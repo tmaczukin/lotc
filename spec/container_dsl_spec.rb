@@ -17,7 +17,7 @@ module LOTC
 
       @container_definition = Proc.new do
         image    :test_image_2
-        volume   '/host/path', '/container/path'
+        volume   '/container/path', '/host/path'
         link     :linked_container, :test_container_1, /test/
         env      'SOME_ENV', 'example'
         cmd      'bash'
@@ -46,8 +46,8 @@ module LOTC
     it 'should set volume mapping' do
       container_builder = subject.call
 
-      expect(container_builder.volumes).to have_key('/host/path')
-      expect(container_builder.volumes['/host/path']).to eq('/container/path')
+      expect(container_builder.volumes).to have_key('/container/path')
+      expect(container_builder.volumes['/container/path']).to eq('/host/path')
     end
 
     it 'should set link mapping' do

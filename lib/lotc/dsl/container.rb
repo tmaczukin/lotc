@@ -16,8 +16,8 @@ module LOTC
         @container_builder.image = @manifest.images[image_name]
       end
 
-      def volume(host_path, container_path)
-        @container_builder.add_volume(host_path, container_path)
+      def volume(container_path, host_path)
+        @container_builder.add_volume(container_path, host_path)
       end
 
       def link(link_id, linked_container_id, wait_for = nil)
