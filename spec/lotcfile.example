@@ -1,81 +1,98 @@
+# Declare application name
+# name will be used by lotc-agent to recognize application
+name :test_app
+
 # Declare used images
-add_image :db,  'mysql:5.5-1'
-add_image :pma, 'phpmyadmin:4.0'
-add_image :app, 'app:1.3'
+image :db,  'mysql:5.5-1',    import: './mysql-image-5.5-1.tar.gz' # if image does not exist - import from tar.gz
+image :pma, 'phpmyadmin:4.0', pull: true                           # or use `docker pull` in this cas
+image :app, 'app:1.3'                                              # 'pull' is default
+                                                                   #
+                                                                   # After deploy - when manifest and images are saved
+                                                                   # on server as deploy artifacts (lotc-agent is saving
+                                                                   # last 'N' versions) all images configurations are
+                                                                   # rewritten to `import: './image-name.tar.gz'`
 
 
 # Define containers
-define_container :db_container do |manifest|
-  detach   true                                       # run in detached mode
-  volume   '/var/lib/mysql', '/srv/docker/app1/mysql' # add volume binding
-  tcp_port 3306, 3306, '127.0.0.5'                    # add port binding
-  image    :db                                        # set image
+container :db_container do
+  detach true                                       # run in detached mode
+  volume '/var/lib/mysql', '/srv/docker/app1/mysql' # add volume binding
+  tcp    3306, 3306, '127.0.0.5'                    # add port binding
+  image  :db                                        # set image do use (must be defined in manifest)
 
   # set command
-  cmd      'create_db_and_run', manifest.envs[:db_name], manifest.envs[:db_user], manifest.envs[:db_pass]
+  cmd    'create_db_and_run', param[:db_name], param[:db_user], param[:db_pass]
 end
 
-define_container :pma_container do |manifest|
-  detach   true
-  link     :db, :db_container, /^DB started!$/ # add link
-  tcp_port 80, 8080, '127.0.0.5'
-  image    :pma
+container :pma_container do
+  detach true
+  link   :db, :db_container    # add link
+  tcp    80, 8080, '127.0.0.5'
+
+  image  :pma
 end
 
-define_container :app_container do |manifest|
-  detach   true
-  link     :db, :db_container, /^DB started!$/
-  env      'DB_NAME', manifest.envs[:db_name]                 # add env
-  env      'DB_USER', manifest.envs[:db_user]                 # add env
-  env      'DB_BASS', manifest.envs[:db_pass]                 # add env
-  env      'APPLICATION_ENV', manifest.envs[:application_env] # add env
-  volume   '/home/app/data', '/srv/docker/app1/app_data'
-  tcp_port 80, 80, '127.0.0.5'
-  image    :app
+container :app_container do
+  detach true
+  link   :db, :db_container
+  env    'DB_NAME', param[:db_name]                    # add env - use param defined in manifest
+  env    'DB_USER', param[:db_user]                    # add env
+  env    'DB_BASS', param[:db_pass]                    # add env
+  env    'APPLICATION_ENV', param[:application_env]    # add env
+  volume '/home/app/data', '/srv/docker/app1/app_data'
+  tcp    80, 80, '127.0.0.5'
+
+  image  :app
 end
 
 # Define container extending previously defined container
-define_container :db_container_tests, :db_container do
-  volume   '/var/lib/mysql', nil # overwrite volume binding for '/var/lib/mysql' container path
-  tcp_port 3306, nil             # overwrite port binding (disable)
+container :db_container_tests, extends: :db_container do
+  volume '/var/lib/mysql', nil # overwrite volume binding for '/var/lib/mysql' container path (disable)
+  tcp    3306, nil             # overwrite port binding (disable)
 end
 
-define_container :app_container_tests, :app_container do |manifest|
+container :app_container_tests, extends: :app_container do |manifest|
   detach   false
-  remove   true
-  link     :db, :db_container_tests, /^DB started!$/
+  remove   true                     # auto remove container after exit
+  link     :db, :db_container_tests
   volume   '/home/app/data', nil
-  tcp_port 80, nil
-  cmd      manifest.param[:cmd]
+  tcp      80, nil
+
+  cmd      param[:cmd]
 end
 
+
+# Define global manifest params
+#
+# Params can be overwritten:
+#   global => from stage => from task
+param :db_name, 'app1'
+param :db_user, 'app1_user'
+param :db_pass, 'app1_pass'
+param :application_env, 'production'
+
+# Define global container stacks
+#
+# Stack contains only basic-level containers.
+# Rest of stack is defined by links between containers
+#
+# Stack can be overwritten:
+#   global => from stage
+stack :app, :app_container
+stack :tests, :app_container_tests
 
 # Define stages
-define_stage :production do
-  # Define manifest envs
-  env 'DB_NAME', 'app1'
-  env 'DB_USER', 'app1_user'
-  env 'DB_PASS', 'app1_pass'
-  env 'APPLICATION_ENV', 'production'
-
-  # Define containers stack
-  #
-  # Stack containes only basic-level containers.
-  # Rest of stack is defined by links between containers.
-  stack :app, :app_container
-  stack :tests, :app_container_tests
-end
+stage :production
 
 # Define stage extending previously defined stage
-define_stage :development, :production do
-  env 'APPLICATION_ENV', 'development' # overwrite env
-  env 'DOMAIN', 'app1.dev'
+stage :development, extends: :production do
+  param :application_env, 'development' # overwrite global (or previously overwritten in parent stage) param
 
-  stack :app, :app_container, :pma_container # overwrite stack
+  stack :app, :app_container, :pma_container # overwrite global stack
 end
 
-define_stage :testing, :development do
-  env 'APPLICATION_ENV', 'testing'
+stage :testing, :development do
+  param :application_env, 'testing'
 end
 
 
@@ -83,58 +100,51 @@ end
 #
 # Each task can be run in each stage.
 # The configuration is loaded properly.
-define_task :start do
-
-  # Generate containers stack and run containers in valid order.
+task :start do
+  # stack_run generates containers stack and run containers in valid order.
   # Output contains live-updated output of first container in stack.
-  run_containers_stack :app do |output|
-    if output.match /^Application started!$/
-      puts 'Application started'
-      return
-    end
+  stack_run :app do |output|
+    return if output.match /^Application started!$/
+    puts output
   end
+
+  puts 'Application started!'
 end
 
-define_task :stop do
+task :stop do
 
-  # Like run_containers_stack but stops containers in valid order
-  stop_containers_stack :app do
+  # Like stack_run but stops containers in valid order
+  stack_stop :app do
     puts 'Application stoped'
   end
 end
 
-define_task :hard_restart do
-  # Iterates over containers in stack
+task :hard_restart do
+  # stack_containers iterates over containers in stack
   #
   # You can filter collection providing defined containers as a splat.
-  containers_stack :app, :app_container do |container|
-    container.exec('send-shutdown-notification')
+  stack_containers :app, :app_container do |container|
+    container.exec('send-shutdown-notification') # like `docker exec` [container] [command]
     sleep(900)
   end
 
-  # Invoke defined task with current stage
+  # Invoke defined tasks with current stage
   invoke :stop
   invoke :start
 end
 
-define_task :restart do
-  containers_stack :app, :app_container do |container|
-    # Runs `docker exec` on container
+task :restart do
+  stack_containers :app, :app_container do |container|
     container.exec('send-shutdown-notification')
     sleep(900)
   end
 
   # Runs `docker restart` on each container in stack in valid order
-  restart_containers_stack :app do |output|
-    if output.match /^Application started!$/
-      puts 'Application restarted'
-      return
-    end
-  end
+  stack_restart :app
 end
 
-define_task :status do
-  containers_stack :app do |c|
+task :status do
+  stack_containers :app do |c|
     # Gets container
     container.status do |s|
       puts "ID: #{s.id}\tNAME: #{s.name}\tIMAGE: #{s.image.name}\nCREATED: #{s.created}\tSTATUS: #{s.status}\n"
@@ -142,41 +152,28 @@ define_task :status do
   end
 end
 
-define_task :cmd do
-  containers_stack :app, :app_container do |container|
-    # container.exec can accept block - block is yelded with live-output stream
-    container.exec('ls', '-ls') do |output|
-      puts output
-    end
-  end
-end
+task :test do
+  param :cmd, 'test-application', '--verbose' # Overwrite previously defined param
 
-define_task :test do
-  # You can set manifest params for each task
-  param :cmd, 'test-application', '--verbose'
-
-  run_containers_stack :tests do |output|
+  stack_run :tests do |output|
     puts output
   end
 end
 
-define_task :spec do
-  param :cmd, 'spec-application', '--quiet'
-
-  run_containers_stack :tests do |output|
-    puts output
-  end
+# Define task extending previously defined
+task :spec, extends: :test do
+  param :cmd, 'spec-application', '--quiet' # Overwrite previously defined param
 end
 
-define_task :backup do
-  containers_stack :app, :app_container do |container|
+task :backup do
+  stack_containers :app, :app_container do |container|
     container.exec('send-shutdown-notification')
     sleep(900)
-    stop_containers_stack :app
+    stack_stop :app
 
     # (...) some data backup code here
 
-    start_containers_stack :app
+    stack_run :app
 
     # (...) some notifications sending code here
   end
@@ -192,12 +189,12 @@ end
 #
 # warning - DB migrations and similar issues you must resolve on your own!
 #           LOTC is managing containers - not application inside of them!
-define_deploy :production do
-  host      'prod.app1.com' # remote ssh host
-  port      2222            # remote ssh port
-  user      'app1-user'     # remote user
-  via       :upload         # upload all defined image as tar archives
-  keep_last 5               # keep last 5 deploys in archive
+deploy :production do
+  host 'prod.app1.com' # remote ssh host
+  port 2222            # remote ssh port
+  user 'app1-user'     # remote user
+  via  :upload         # upload all defined image as tar archives
+  keep 5               # keep last 5 deploys in archive
 
   # connect with remote agent and run commands on it
   agent 'unix:///var/run/nazgul.sock' do |agent|
@@ -205,12 +202,12 @@ define_deploy :production do
   end
 end
 
-define_deploy :staging do
-  host      'staging.app1.com'
-  port      2222
-  user      'app1-user'
-  via       :pull       # use standard `docker pull` for all defined images
-  keep_last 3
+deploy :staging do
+  host 'staging.app1.com'
+  port 2222
+  user 'app1-user'
+  via  :pull       # use standard `docker pull` for all defined images
+  keep 3
 
   agent 'tcp://127.0.0.1:1234' do |agent|
     agent.run :hard_restart, :production
@@ -228,5 +225,4 @@ end
 #
 #
 # Both tools use manifest files to define configuration.
-# But - if You want - You can prepare configuration
-# and/or execute tasks and deploys programatically.
+# But - if You want - You can prepare configuration and/or execute tasks and deploys programatically.
