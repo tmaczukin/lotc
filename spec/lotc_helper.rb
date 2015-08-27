@@ -18,7 +18,7 @@ module LotcHelper
     END
   end
 
-  def full_example_manifest
+  def full_manifest_example
     File.read(File.dirname(__FILE__) + '/lotcfile.example')
   end
 end
