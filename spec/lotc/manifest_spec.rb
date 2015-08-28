@@ -5,6 +5,8 @@ module LOTC
     end
 
     before do
+      skip('DSL reorganization')
+
       @manifest_contents = example_basic_manifest
       @manifest = subject.call
     end

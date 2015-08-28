@@ -5,6 +5,8 @@ module LOTC
     end
 
     before do
+      skip('DSL reorganization')
+
       manifest = <<-END
         add_image :test_image_1, 'test_image_1'
         add_image :test_image_2, 'test_image_2:v0.1'

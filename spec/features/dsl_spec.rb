@@ -5,6 +5,8 @@ describe 'Features' do
     end
 
     before do
+      skip('Waiting for DSL implementation')
+
       @manifest_contents = full_manifest_example
     end
 
