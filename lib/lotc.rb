@@ -16,6 +16,8 @@ module LOTC
   # Builder module
   #
   module Builder
+    autoload :Builder,   'lotc/builder/builder'
+
     autoload :Container, 'lotc/builder/container'
     autoload :Deploy,    'lotc/builder/deploy'
     autoload :Stage,     'lotc/builder/stage'

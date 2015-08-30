@@ -1,12 +1,11 @@
 module LOTC
   module Builder
-    # Stage class
+    # Builder module
     #
-    class Stage
-      include Builder
+    module Builder
 
       def build
-        LOTC::Stage.new
+        raise NotImplementedError
       end
     end
   end

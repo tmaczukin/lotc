@@ -3,6 +3,11 @@ module LOTC
     # Deploy class
     #
     class Deploy
+      include Builder
+
+      def build
+        LOTC::Deploy.new
+      end
     end
   end
 end
