@@ -4,7 +4,23 @@ require 'lotc/exceptions'
 # LOTC module
 #
 module LOTC
-  autoload :Manifest, 'lotc/manifest'
+  autoload :Manifest,  'lotc/manifest'
+  autoload :Container, 'lotc/container'
+  autoload :Deploy,    'lotc/deploy'
+  autoload :Image,     'lotc/image'
+  autoload :Parameter, 'lotc/parameter'
+  autoload :Stage,     'lotc/stage'
+  autoload :Stack,     'lotc/stack'
+  autoload :Task,      'lotc/task'
+
+  # Builder module
+  #
+  module Builder
+    autoload :Container, 'lotc/builder/container'
+    autoload :Deploy,    'lotc/builder/deploy'
+    autoload :Stage,     'lotc/builder/stage'
+    autoload :Task,      'lotc/builder/task'
+  end
 
   # Resolver module
   #

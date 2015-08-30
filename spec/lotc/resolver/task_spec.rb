@@ -1,15 +1,20 @@
 require 'lotc/resolver/shared_examples/standard_resolver'
 require 'lotc/resolver/shared_examples/building_resolver'
 
+# LOTC module
+#
 module LOTC
-  module Resolver
-    describe Task do
-      subject do
-        -> { Task.new }
-      end
-
-      it_behaves_like 'standard resolver'
-      it_behaves_like 'building resolver'
+  describe Resolver::Task do
+    subject do
+      -> { Resolver::Task.new }
     end
+
+    before do
+      @object_to_add = LOTC::Task.new
+      @builder_to_add = LOTC::Builder::Task.new
+    end
+
+    it_behaves_like 'standard resolver'
+    it_behaves_like 'building resolver'
   end
 end

@@ -4,6 +4,8 @@ module LOTC
     #
     class Image
       include Standard
+
+      valid_object_type LOTC::Image
     end
   end
 end

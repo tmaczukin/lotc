@@ -4,6 +4,8 @@ module LOTC
     #
     class Parameter
       include Standard
+
+      valid_object_type LOTC::Parameter
     end
   end
 end
