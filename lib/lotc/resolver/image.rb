@@ -3,6 +3,7 @@ module LOTC
     # Image class
     #
     class Image
+      include Standard
     end
   end
 end

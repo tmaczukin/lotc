@@ -3,6 +3,7 @@ module LOTC
     # Parameter class
     #
     class Parameter
+      include Standard
     end
   end
 end

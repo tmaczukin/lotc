@@ -1,4 +1,5 @@
 require 'lotc/version'
+require 'lotc/exceptions'
 
 # LOTC module
 #
@@ -8,6 +9,9 @@ module LOTC
   # Resolver module
   #
   module Resolver
+    autoload :Standard,  'lotc/resolver/standard'
+    autoload :Building,  'lotc/resolver/building'
+
     autoload :Container, 'lotc/resolver/container'
     autoload :Deploy,    'lotc/resolver/deploy'
     autoload :Image,     'lotc/resolver/image'

@@ -3,6 +3,7 @@ module LOTC
     # Container tasks
     #
     class Container
+      include Building
     end
   end
 end

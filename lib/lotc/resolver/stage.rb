@@ -3,6 +3,7 @@ module LOTC
     # Stage class
     #
     class Stage
+      include Building
     end
   end
 end

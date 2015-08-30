@@ -3,6 +3,7 @@ module LOTC
     # Task class
     #
     class Task
+      include Building
     end
   end
 end

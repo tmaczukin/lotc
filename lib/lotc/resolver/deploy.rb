@@ -3,6 +3,7 @@ module LOTC
     # Deploy class
     #
     class Deploy
+      include Building
     end
   end
 end

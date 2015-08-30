@@ -3,6 +3,7 @@ module LOTC
     # Stack class
     #
     class Stack
+      include Standard
     end
   end
 end
