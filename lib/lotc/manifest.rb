@@ -2,27 +2,24 @@ module LOTC
   # Manifest class
   #
   class Manifest
-    attr_reader :images, :containers
+    attr_reader :containers, :deploys, :images, :parameters, :stacks, :stages, :tasks
+    attr_reader :maintainers
+    attr_accessor :name
 
-    def initialize(contents)
-      @images = {}
-      @containers = {}
+    def initialize
+      @containers = Resolver::Container.new
+      @deploys = Resolver::Deploy.new
+      @images = Resolver::Image.new
+      @parameters = Resolver::Parameter.new
+      @stacks = Resolver::Stack.new
+      @stages = Resolver::Stage.new
+      @tasks = Resolver::Task.new
 
-      DSL::Manifest.new(self, contents) if contents
+      @maintainers = []
     end
 
-    def add_image(name, image)
-      raise DSL::DuplicateImageNameError, "Image name '#{name}' was already used" if
-        @images.key?(name)
-
-      @images[name] = image
-    end
-
-    def add_container(name, container)
-      raise DSL::DuplicateContainerNameError, "Container name '#{name}' was already used" if
-        @containers.key?(name)
-
-      @containers[name] = container
+    def add_maintainer(maintainer)
+      @maintainers << maintainer
     end
   end
 end

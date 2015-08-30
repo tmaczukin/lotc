@@ -1,16 +1,19 @@
 require 'lotc/version'
-require 'lotc/exceptions'
 
 # LOTC module
 #
 module LOTC
-  autoload :Manifest,         'lotc/manifest'
-  autoload :Image,            'lotc/image'
-  autoload :Link,             'lotc/link'
-  autoload :ContainerBuilder, 'lotc/container_builder'
+  autoload :Manifest, 'lotc/manifest'
 
-  module DSL
-    autoload :Manifest,  'lotc/dsl/manifest'
-    autoload :Container, 'lotc/dsl/container'
+  # Resolver module
+  #
+  module Resolver
+    autoload :Container, 'lotc/resolver/container'
+    autoload :Deploy,    'lotc/resolver/deploy'
+    autoload :Image,     'lotc/resolver/image'
+    autoload :Parameter, 'lotc/resolver/parameter'
+    autoload :Stack,     'lotc/resolver/stack'
+    autoload :Stage,     'lotc/resolver/stage'
+    autoload :Task,      'lotc/resolver/task'
   end
 end

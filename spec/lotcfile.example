@@ -2,6 +2,9 @@
 # name will be used by lotc-agent to recognize application
 name :test_app
 
+# Add list of maintainers
+maintainers 'Developer <developer@example.com>'
+
 # Declare used images
 image :db,  'mysql:5.5-1',    import: './mysql-image-5.5-1.tar.gz' # if image does not exist - import from tar.gz
 image :pma, 'phpmyadmin:4.0', pull: true                           # or use `docker pull` in this cas
