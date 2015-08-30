@@ -10,7 +10,7 @@ shared_examples 'standard resolver' do
     expect { resolver.add(:name, @object_to_add) }.to raise_error LOTC::DuplicatedNameError
   end
 
-  it 'should have abiliti to check if object was added' do
+  it 'should have ability to check if object was added' do
     resolver = subject.call
     resolver.add(:name, @object_to_add)
 

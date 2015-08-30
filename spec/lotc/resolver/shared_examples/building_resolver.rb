@@ -10,7 +10,7 @@ shared_examples 'building resolver' do
     expect { resolver.add_builder(:name, @builder_to_add) }.to raise_error LOTC::DuplicatedNameError
   end
 
-  it 'should have abiliti to check if builder object was added' do
+  it 'should have ability to check if builder object was added' do
     resolver = subject.call
     resolver.add_builder(:name, @builder_to_add)
 
