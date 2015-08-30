@@ -3,7 +3,6 @@ module LOTC
     # Builder module
     #
     module Builder
-
       def build
         raise NotImplementedError
       end

@@ -12,6 +12,7 @@ module LOTC
     before do
       @object_to_add = LOTC::Stage.new
       @builder_to_add = LOTC::Builder::Stage.new
+      @object_type = LOTC::Stage
     end
 
     it_behaves_like 'standard resolver'

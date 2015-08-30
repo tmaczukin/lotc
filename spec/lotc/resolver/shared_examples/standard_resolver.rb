@@ -23,4 +23,15 @@ shared_examples 'standard resolver' do
 
     expect { resolver.add(:name, LOTC::Manifest.new) }.to raise_error LOTC::InvalidObjectError
   end
+
+  it 'should return added object' do
+    resolver = subject.call
+    resolver.add(:test, @object_to_add)
+
+    expect(resolver.get(:test)).to eq(@object_to_add)
+  end
+
+  it 'should raise error when trying to get not added object' do
+    expect { subject.call.get(:not_added) }.to raise_error LOTC::NotAddedObjectError
+  end
 end

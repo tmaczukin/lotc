@@ -12,6 +12,7 @@ module LOTC
     before do
       @object_to_add = LOTC::Task.new
       @builder_to_add = LOTC::Builder::Task.new
+      @object_type = LOTC::Task
     end
 
     it_behaves_like 'standard resolver'

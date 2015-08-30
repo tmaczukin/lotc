@@ -23,4 +23,22 @@ shared_examples 'building resolver' do
 
     expect { resolver.add_builder(:name, LOTC::Manifest.new) }.to raise_error LOTC::InvalidBuilderError
   end
+
+  it 'should return added builder' do
+    resolver = subject.call
+    resolver.add_builder(:test, @builder_to_add)
+
+    expect(resolver.get_builder(:test)).to eq(@builder_to_add)
+  end
+
+  it 'should raise error when trying to get not added builder' do
+    expect { subject.call.get_builder(:not_added) }.to raise_error LOTC::NotAddedBuilderError
+  end
+
+  it 'should build and return builded object when named builder exists but named object was not added' do
+    resolver = subject.call
+    resolver.add_builder(:object_to_build, @builder_to_add)
+
+    expect(resolver.get(:object_to_build)).to be_a(@object_type)
+  end
 end

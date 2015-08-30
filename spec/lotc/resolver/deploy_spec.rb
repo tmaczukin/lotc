@@ -12,6 +12,7 @@ module LOTC
     before do
       @object_to_add = LOTC::Deploy.new
       @builder_to_add = LOTC::Builder::Deploy.new
+      @object_type = LOTC::Deploy
     end
 
     it_behaves_like 'standard resolver'

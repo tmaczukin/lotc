@@ -12,6 +12,7 @@ module LOTC
     before do
       @object_to_add = LOTC::Container.new
       @builder_to_add = LOTC::Builder::Container.new
+      @object_type = LOTC::Container
     end
 
     it_behaves_like 'standard resolver'

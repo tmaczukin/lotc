@@ -20,11 +20,30 @@ module LOTC
         @builders[name] = builder
       end
 
+      def get_builder(name)
+        raise NotAddedBuilderError,
+              "Builder with name '#{name}' was not added to resolver" unless contains_builder?(name)
+
+        @builders[name]
+      end
+
+      def get(name)
+        build_and_add(name) if contains_builder?(name)
+
+        super
+      end
+
       def contains_builder?(name)
         @builders.key?(name)
       end
 
       private
+
+      def build_and_add(name)
+        return unless self.is_a?(Standard)
+        object = @builders[name].build
+        add(name, object)
+      end
 
       # ClassMethods for LOTC::Resolver::Building
       #

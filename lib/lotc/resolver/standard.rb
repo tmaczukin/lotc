@@ -20,6 +20,12 @@ module LOTC
         @objects[name] = value
       end
 
+      def get(name)
+        raise NotAddedObjectError, "Object with name '#{name}' was not added to resolver" unless contains?(name)
+
+        @objects[name]
+      end
+
       def contains?(name)
         @objects.key?(name)
       end
