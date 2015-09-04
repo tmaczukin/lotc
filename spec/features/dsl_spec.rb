@@ -1,8 +1,6 @@
 describe 'Features' do
   describe 'DSL' do
-    subject do
-      -> { LOTC::Manifest.new(manifest_contents) }
-    end
+    subject { -> { LOTC::Manifest.new(manifest_contents) } }
 
     before do
       skip('Waiting for DSL implementation')
