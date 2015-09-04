@@ -4,13 +4,9 @@ require 'lotc/resolver/shared_examples/standard_resolver'
 #
 module LOTC
   describe Resolver::Image do
-    subject do
-      -> { Resolver::Image.new }
-    end
+    let(:object_to_add) { LOTC::Image.new }
 
-    before do
-      @object_to_add = LOTC::Image.new
-    end
+    subject { -> { Resolver::Image.new } }
 
     it_behaves_like 'standard resolver'
   end

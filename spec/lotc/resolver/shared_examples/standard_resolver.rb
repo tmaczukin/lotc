@@ -1,37 +1,49 @@
 shared_examples 'standard resolver' do
-  it 'should have ability to add object into resolver' do
-    expect { subject.call.add(:name, @object_to_add) }.to_not raise_error
+  context 'when name was already used' do
+    it 'raises error while adding object' do
+      resolver = subject.call
+      resolver.add(:name, object_to_add)
+
+      expect { resolver.add(:name, object_to_add) }.to raise_error LOTC::DuplicatedNameError
+    end
   end
 
-  it 'should raise error while duplicating name' do
+  context 'when object has invalid type' do
+    it 'raises error while adding object' do
+      expect { subject.call.add(:name, LOTC::Manifest.new) }.to raise_error LOTC::InvalidObjectError
+    end
+  end
+
+  context 'when name was not used' do
+    it 'raises error while getting object' do
+      expect { subject.call.get(:not_added) }.to raise_error LOTC::NotAddedObjectError
+    end
+  end
+
+  it 'returns added object' do
     resolver = subject.call
-    resolver.add(:name, @object_to_add)
+    resolver.add(:test, object_to_add)
 
-    expect { resolver.add(:name, @object_to_add) }.to raise_error LOTC::DuplicatedNameError
+    expect(resolver.get(:test)).to eq(object_to_add)
   end
 
-  it 'should have ability to check if object was added' do
-    resolver = subject.call
-    resolver.add(:name, @object_to_add)
+  describe '#contains?' do
+    let(:resolver) do
+      resolver = subject.call
+      resolver.add(:name, object_to_add)
+      resolver
+    end
 
-    expect(resolver.contains?(:name)).to be true
-    expect(resolver.contains?(:name_2)).to be false
-  end
+    context 'when object was added' do
+      it 'returns true' do
+        expect(resolver.contains?(:name)).to be true
+      end
+    end
 
-  it 'should raise error when adding object of invalid type' do
-    resolver = subject.call
-
-    expect { resolver.add(:name, LOTC::Manifest.new) }.to raise_error LOTC::InvalidObjectError
-  end
-
-  it 'should return added object' do
-    resolver = subject.call
-    resolver.add(:test, @object_to_add)
-
-    expect(resolver.get(:test)).to eq(@object_to_add)
-  end
-
-  it 'should raise error when trying to get not added object' do
-    expect { subject.call.get(:not_added) }.to raise_error LOTC::NotAddedObjectError
+    context 'when object was not added' do
+      it 'returns false' do
+        expect(resolver.contains?(:name_2)).to be false
+      end
+    end
   end
 end

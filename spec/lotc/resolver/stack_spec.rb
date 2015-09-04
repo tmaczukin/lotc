@@ -4,13 +4,9 @@ require 'lotc/resolver/shared_examples/standard_resolver'
 #
 module LOTC
   describe Resolver::Stack do
-    subject do
-      -> { Resolver::Stack.new }
-    end
+    let(:object_to_add) { LOTC::Stack.new }
 
-    before do
-      @object_to_add = LOTC::Stack.new
-    end
+    subject { -> { Resolver::Stack.new } }
 
     it_behaves_like 'standard resolver'
   end
