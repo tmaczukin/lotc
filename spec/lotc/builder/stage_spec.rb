@@ -4,13 +4,8 @@ require 'lotc/builder/shared_examples/builder'
 #
 module LOTC
   describe Builder::Stage do
-    subject do
-      -> { Builder::Stage.new }
-    end
-
-    before do
-      @builded_type = LOTC::Stage
-    end
+    let(:builded_type) { LOTC::Stage }
+    subject { Builder::Stage.new }
 
     it_behaves_like 'builder'
   end

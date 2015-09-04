@@ -4,13 +4,8 @@ require 'lotc/builder/shared_examples/builder'
 #
 module LOTC
   describe Builder::Deploy do
-    subject do
-      -> { Builder::Deploy.new }
-    end
-
-    before do
-      @builded_type = LOTC::Deploy
-    end
+    let(:builded_type) { LOTC::Deploy }
+    subject { Builder::Deploy.new }
 
     it_behaves_like 'builder'
   end

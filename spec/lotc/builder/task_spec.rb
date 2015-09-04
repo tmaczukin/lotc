@@ -4,13 +4,8 @@ require 'lotc/builder/shared_examples/builder'
 #
 module LOTC
   describe Builder::Task do
-    subject do
-      -> { Builder::Task.new }
-    end
-
-    before do
-      @builded_type = LOTC::Task
-    end
+    let(:builded_type) { LOTC::Task }
+    subject { Builder::Task.new }
 
     it_behaves_like 'builder'
   end
