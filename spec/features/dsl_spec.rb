@@ -1,26 +1,31 @@
 describe 'Features' do
   describe 'DSL' do
     subject do
-      -> { LOTC::Manifest.new(@manifest_contents) }
+      -> { LOTC::Manifest.new(manifest_contents) }
     end
 
     before do
       skip('Waiting for DSL implementation')
-
-      @manifest_contents = full_manifest_example
     end
 
-    it 'should load valid manifest content without raising error' do
-      expect { subject.call }.to_not raise_error
+    context 'when manifest content is valid' do
+      let(:manifest_contents) { fulle_manifest_example }
+
+      it 'loads manifest without raising error' do
+        expect { subject.call }.to_not raise_error
+      end
+
+      it 'returns Manifest object' do
+        expect(subject.call).to be_a Manifest
+      end
     end
 
-    it 'should raise error when loading invalid manifest' do
-      @manifest_contents = 'invalid_method'
-      expect { subject.call }.to raise_error InvalidManifestError
-    end
+    context 'when manifest content is invalid' do
+      let(:manifest_contents) { 'invalid_method' }
 
-    it 'should return Manifest object' do
-      expect(subject.call).to be_a Manifest
+      it 'raises error when loading manifest' do
+        expect { subject.call }.to raise_error InvalidManifestError
+      end
     end
   end
 end
