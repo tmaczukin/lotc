@@ -27,6 +27,13 @@ shared_examples 'standard resolver' do
     expect(resolver.get(:test)).to eq(object_to_add)
   end
 
+  it 'returns added objects count' do
+    resolver = subject.call
+    resolver.add(:test, object_to_add)
+
+    expect(resolver.count).to be > 0
+  end
+
   describe '#contains?' do
     let(:resolver) do
       resolver = subject.call

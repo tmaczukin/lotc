@@ -37,6 +37,10 @@ module LOTC
         @builders.key?(name)
       end
 
+      def count_builders
+        @builders.count
+      end
+
       private
 
       def build_and_add(name)

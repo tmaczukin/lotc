@@ -24,6 +24,12 @@ module LOTC
     autoload :Task,      'lotc/builder/task'
   end
 
+  # DSL module
+  #
+  module DSL
+    autoload :Manifest, 'lotc/dsl/manifest'
+  end
+
   # Resolver module
   #
   module Resolver

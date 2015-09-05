@@ -27,6 +27,13 @@ shared_examples 'building resolver' do
     expect(resolver.get_builder(:test)).to eq(builder_to_add)
   end
 
+  it 'returns added builders count' do
+    resolver = subject.call
+    resolver.add_builder(:test, builder_to_add)
+
+    expect(resolver.count_builders).to be > 0
+  end
+
   describe '#contains_builder?' do
     let(:resolver) do
       resolver = subject.call

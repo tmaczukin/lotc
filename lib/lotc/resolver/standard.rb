@@ -30,6 +30,10 @@ module LOTC
         @objects.key?(name)
       end
 
+      def count
+        @objects.count
+      end
+
       private
 
       # ClassMethods for LOTC::Resolver::Standard
