@@ -24,13 +24,13 @@ module LOTC
         end
       end
 
-      def image(name, *image_definition)
-        image = LOTC::Image.new()
+      def image(name, *_image_definition)
+        image = LOTC::Image.new
 
         @manifest.images.add(name, image)
       end
 
-      def param(name, value)
+      def param(name, _value)
         parameter = LOTC::Parameter.new
 
         @manifest.parameters.add(name, parameter)

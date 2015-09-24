@@ -48,7 +48,7 @@ module LOTC
     context 'when images are present' do
       let(:manifest_contents) do
         <<-END
-          image :image_1, 'image_name', 'v0.1' 
+          image :image_1, 'image_name', 'v0.1'
           image :image_2, 'image2_name', 'latest'
         END
       end
