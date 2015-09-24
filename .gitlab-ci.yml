@@ -4,6 +4,7 @@ types:
 test_lotc:
   type: test
   script:
+    - source ~/.profile
     - bundle install
     - rake
   tags:
