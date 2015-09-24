@@ -1,0 +1,10 @@
+types:
+  - test
+
+test_lotc:
+  type: test
+  script:
+    - bundle install
+    - rake
+  tags:
+    - rbenv_2.2.0
