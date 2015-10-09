@@ -187,7 +187,7 @@ end
 #
 # Deploy send configuration via SSH connection and run commands on remote agent.
 #
-# All configurations (manifests and image archives, if uploaded as tars) are preserved,
+# All configurations (manifests and image archives, exported as tars) are preserved,
 # so You can rollback to previously used version.
 #
 # warning - DB migrations and similar issues you must resolve on your own!
@@ -196,26 +196,23 @@ deploy :production do
   host 'prod.app1.com' # remote ssh host
   port 2222            # remote ssh port
   user 'app1-user'     # remote user
-  via  :upload         # upload all defined image as tar archives
   keep 5               # keep last 5 deploys in archive
 
-  # connect with remote agent and run commands on it
-  agent 'unix:///var/run/nazgul.sock' do |agent|
-    agent.task :hard_restart, :production # run ':hard_restart' task with ':production' environment
-  end
+  # TODO: need to rethink how to run commands on remote host while running deploy
 end
 
 deploy :staging do
   host 'staging.app1.com'
   port 2222
   user 'app1-user'
-  via  :pull       # use standard `docker pull` for all defined images
   keep 3
 
-  agent 'tcp://127.0.0.1:1234' do |agent|
-    agent.run :hard_restart, :production
-  end
+  # TODO: need to rethink how to run commands on remote host while running deploy
 end
+
+#
+# TODO: need to rethink if lotc-agent is really necessary
+#
 
 # LOTC is bundled with two executables: lotc and lotc-agent.
 #
