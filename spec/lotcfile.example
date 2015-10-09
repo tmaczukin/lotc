@@ -54,7 +54,7 @@ container :db_container_tests, extends: :db_container do
   tcp    3306, nil             # overwrite port binding (disable)
 end
 
-container :app_container_tests, extends: :app_container do |manifest|
+container :app_container_tests, extends: :app_container do
   detach   false
   remove   true                     # auto remove container after exit
   link     :db, :db_container_tests
@@ -147,7 +147,7 @@ task :restart do
 end
 
 task :status do
-  stack_containers :app do |c|
+  stack_containers :app do |container|
     # Gets container
     container.status do |s|
       puts "ID: #{s.id}\tNAME: #{s.name}\tIMAGE: #{s.image.name}\nCREATED: #{s.created}\tSTATUS: #{s.status}\n"
