@@ -1,0 +1,7 @@
+language: ruby
+install:
+    - gem install bundler --version '1.10'
+    - bundle install
+rvm:
+    - 2.1.5
+    - 2.2.0
