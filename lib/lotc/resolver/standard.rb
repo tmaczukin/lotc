@@ -39,9 +39,11 @@ module LOTC
       # ClassMethods for LOTC::Resolver::Standard
       #
       module ClassMethods
+        # rubocop:disable Style/TrivialAccessors
         def valid_object_type(type)
           @valid_object_type = type
         end
+        # rubocop:enable Style/TrivialAccessors
 
         def check_object_type(value)
           return unless @valid_object_type

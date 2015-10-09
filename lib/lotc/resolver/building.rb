@@ -52,9 +52,11 @@ module LOTC
       # ClassMethods for LOTC::Resolver::Building
       #
       module ClassMethods
+        # rubocop:disable Style/TrivialAccessors
         def valid_builder_type(type)
           @valid_builder_type = type
         end
+        # rubocop:enable Style/TrivialAccessors
 
         def check_builder_type(builder)
           return unless @valid_builder_type
